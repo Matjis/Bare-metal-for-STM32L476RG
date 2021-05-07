@@ -5,6 +5,10 @@
 #define SRAM1_END        ((SRAM1_START) + (SRAM1_SIZE))
 
 // SRAM2 starts at 0x10000000U and is (32U * 1024U) // 32KB
+#define SRAM2_START      0x10000000U
+#define SRAM2_SIZE       (32U * 1024U) // 32KB
+#define SRAM2_END        ((SRAM2_START) + (SRAM2_SIZE))
+
 
 #define STACK_START     SRAM1_END
 
@@ -88,7 +92,7 @@ void LPTIM2_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
 void OTG_FS_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
 void DMA2_CH6_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
 void DMA2_CH7_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
-void LPUART1_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
+void LPUART1_IRQHandler(void) __attribute __ ((weak, alias("Default_Handler")));
 void QUADSPI_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
 void I2C3_EV_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
 void I2C3_ER_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
@@ -212,6 +216,13 @@ void Default_Handler(void){
 
 void Reset_Handler(void){
 
+    // copy .data section to SRAM
+
+    // init the .bss section to zero in SRAM
+
+    //call init function of std. library if needed
+
+    // call main()
 
 
 }
