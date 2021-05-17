@@ -2,9 +2,9 @@ ENTRY(Reset_Handler)
 
 MEMORY
 {
-    FLASH(rx):ORIGIN=0x08000000,LENGHT=1024K
-    SRAM1(rwx):ORIGIN=0x20000000,LENGHT=96K
-    SRAM2(rwx):ORIGIN=0x10000000,LENGHT=32K
+    FLASH(rx):ORIGIN =0x08000000,LENGTH =1024K
+    SRAM1(rwx):ORIGIN =0x20000000,LENGTH =96K
+    SRAM2(rwx):ORIGIN =0x10000000,LENGTH =32K
 }
 
 SECTIONS
@@ -17,17 +17,17 @@ SECTIONS
         _etext = .; 
     }> FLASH
 
-    .data 
+    .data : 
     {
         _sdata = .;
         *(.data)
         _edata = .;
     }> SRAM1 AT> FLASH
 
-    .bss
+    .bss :
     {
-        _sbss = .;
+        _sbss = .; 
         *(.bss)
         _ebss = .;
-    }>SRAM1
+    }> SRAM1
 }
