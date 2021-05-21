@@ -15,6 +15,9 @@
 #define BuiltInLED								5
 #define ExtLED									6
 
+const uint32_t const_v_1 = 100;
+const uint8_t const_v_3 = 101;
+
 void delay(void){
 	for(uint32_t i=0; i < 500000/2 ; i++);
 }

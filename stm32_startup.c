@@ -4,16 +4,28 @@
 #define SRAM1_SIZE       (96U * 1024U) // 96KB
 #define SRAM1_END        ((SRAM1_START) + (SRAM1_SIZE))
 
-// SRAM2 starts at 0x10000000U and is (32U * 1024U) // 32KB
+/* SRAM2 starts at 0x10000000U and is (32U * 1024U) // 32KB
 #define SRAM2_START      0x10000000U
 #define SRAM2_SIZE       (32U * 1024U) // 32KB
 #define SRAM2_END        ((SRAM2_START) + (SRAM2_SIZE))
-
+*/
 
 #define STACK_START     SRAM1_END
 
+extern uint32_t _etext;
+extern uint32_t _sdata;
+extern uint32_t _edata;
+
+extern uint32_t _sbss;
+extern uint32_t _ebss;
+
+//prototype for main
+int main(void);
+
+// Function prototypes of STM32L476xx system exceptions and IRQ handlers
 void Reset_Handler(void);
-void NMI_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+
+void NMI_Handler (void) __attribute__ ((weak, alias("Default_Handler")));
 void HardFault_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
 void MemManage_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
 void BusFault_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
@@ -108,10 +120,11 @@ void FPU_IRQHandler(void) __attribute__ ((weak, alias("Default_Handler")));
 
 
 
-uint32_t vectors[] __attribute__((section(".isr.vector"))) = {
+uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     STACK_START,
     (uint32_t)Reset_Handler,
     (uint32_t)NMI_Handler,
+    (uint32_t)HardFault_Handler,
     (uint32_t)MemManage_Handler,
     (uint32_t)BusFault_Handler,
     (uint32_t)UsageFault_Handler,
@@ -124,7 +137,7 @@ uint32_t vectors[] __attribute__((section(".isr.vector"))) = {
     0,
     (uint32_t)PendSV_Handler,
     (uint32_t)SysTick_Handler,
-    (uint32_t)WWDG_IRQHandler,             			/* Window Watchdog interrupt                                           */
+    (uint32_t)WWDG_IRQHandler,             			    /* Window Watchdog interrupt                                           */
     (uint32_t)PVD_PVM_IRQHandler,           			/* PVD through EXTI line detection                                     */
     (uint32_t)RTC_TAMP_STAMP_IRQHandler,        		/* Tamper and TimeStamp interrupts                                     */
     (uint32_t)RTC_WKUP_IRQHandler,          			/* RTC Tamper or TimeStamp /CSS on LSE through EXTI line 19 interrupts */
@@ -211,18 +224,35 @@ uint32_t vectors[] __attribute__((section(".isr.vector"))) = {
 };
 
 void Default_Handler(void){
+
     while(1);
 }
 
 void Reset_Handler(void){
 
     // copy .data section to SRAM
+    uint32_t size = &_edata - &_sdata;
+
+    uint8_t *pDst = (uint8_t*)&_sdata;
+    uint8_t *pSrc = (uint8_t*)&_etext; //Flash
+
+    for(uint32_t i=0; i < size; i++){
+        
+        *pDst++ = *pSrc++;
+    }
 
     // init the .bss section to zero in SRAM
+    size = &_ebss - &_sbss;
+    pDst = (uint8_t*)&_sbss;
+
+    for(uint32_t i=0; i < size; i++){
+        
+        *pDst++ = 0;
+    }
 
     //call init function of std. library if needed
 
-    // call main()
+    main();
 
 
 }
