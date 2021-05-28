@@ -231,7 +231,7 @@ void Default_Handler(void){
 void Reset_Handler(void){
 
     // copy .data section to SRAM
-    uint32_t size = &_edata - &_sdata;
+    uint32_t size = (uint32_t)&_edata - (uint32_t)&_sdata;
 
     uint8_t *pDst = (uint8_t*)&_sdata;
     uint8_t *pSrc = (uint8_t*)&_etext; //Flash

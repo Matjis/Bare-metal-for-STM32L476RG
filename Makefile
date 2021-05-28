@@ -16,3 +16,6 @@ final.elf: main.o stm32_startup.o
 
 clean: 
 		rm -rf *.o *.elf
+
+load:
+	openocd -f /board/st_nucleo_l476rg.cfg

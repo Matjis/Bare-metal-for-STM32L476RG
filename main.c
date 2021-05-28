@@ -12,6 +12,7 @@
 #define GPIOA_PUPD_REG 							(GPIOA_BASE_ADDR + 0x0C)
 #define GPIOA_OPTYPE_REG 						(GPIOA_BASE_ADDR + 0x04)
 #define GPIOA_OUTPUTDATA_REG 					(GPIOA_BASE_ADDR + 0x14)
+
 #define BuiltInLED								5
 #define ExtLED									6
 
@@ -28,32 +29,33 @@ int main(void)
 	uint32_t *pRccAhb2Enr = (uint32_t*) (RCC_AHB2_ENR_ADDR);
 	*pRccAhb2Enr |= (1 << 0);
 
-	// Reset and set GPIOA mode to output
+	// Reset and set GPIOA mode register to output
 	uint32_t *GPIOA_MDOE = (uint32_t*) (GPIOA_MODE_REG);
 	*GPIOA_MDOE &= ~( 3 << ( ExtLED *2) );
 	*GPIOA_MDOE |= ( 1 << (ExtLED *2) ) ;
 
-	//
+	// Reset and set GPIOA speed register to high
 	uint32_t *GPIOA_SPEED = (uint32_t*) (GPIOA_SPEED_REG );
 	*GPIOA_SPEED &= ~( 3 << ( ExtLED *2) );
 	*GPIOA_SPEED |= ( 2 << ( ExtLED *2) ) ;
 
-	//
+	// Reset and set GPIOA pull up/ pull down register to pull up
 	uint32_t *GPIOA_PUPD = (uint32_t*) (GPIOA_PUPD_REG);
 	*GPIOA_PUPD &= ~( 3 << ( ExtLED *2) );
 	*GPIOA_PUPD |= ( 1 << ( ExtLED *2) ) ;
 
-	//
+	// Reset and set GPIOA output type register to open-drain
 	uint32_t *GPIOA_OPTYPE = (uint32_t*) (GPIOA_OPTYPE_REG );
 	*GPIOA_OPTYPE &= ~( 1 << ExtLED );
 	*GPIOA_OPTYPE |= ( 1 << ExtLED) ;
 
-	//
+	// GPIOA output data register pointer
 	uint32_t *GPIOA_OUTPUTDATA = (uint32_t*) (GPIOA_OUTPUTDATA_REG );
 	//*GPIOA_OUTPUTDATA &= ~( 1 << 5 );
 
 
 	while(1){
+		// set GPIOA pin 6 to on/off with delay for output LED
 		*GPIOA_OUTPUTDATA ^= ( 1 << ExtLED) ;
 		delay();
 	}
